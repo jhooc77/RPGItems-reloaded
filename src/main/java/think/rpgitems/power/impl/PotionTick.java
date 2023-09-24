@@ -38,6 +38,8 @@ public class PotionTick extends BasePower {
     public int duration = 60;
     @Property
     public boolean clear = false;
+    @Property
+    public boolean verbose = false;
 
     /**
      * Cost of this power
@@ -93,6 +95,10 @@ public class PotionTick extends BasePower {
         return amplifier;
     }
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
     public class Impl implements PowerTick, PowerSneaking {
         @Override
         public PowerResult<Void> tick(Player player, ItemStack stack) {
@@ -110,7 +116,8 @@ public class PotionTick extends BasePower {
                     hasEffect = true;
                     if (isClear()) {
                         player.removePotionEffect(getEffect());
-                    } else if (potionEffect.getDuration() <= 5 || potionEffect.getAmplifier() < getAmplifier())
+                    } else if ((potionEffect.getAmplifier() == getAmplifier() && (potionEffect.getDuration() <= 5 || isVerbose()))
+                            || potionEffect.getAmplifier() < getAmplifier())
                         player.addPotionEffect(new PotionEffect(getEffect(), getDuration(), getAmplifier(), true), true);
                     break;
                 }
